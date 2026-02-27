@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TanvirAI</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    
+
+    
+    <style>
+        :root {
+            --bg-body: #050505;
+            --bg-card: #0f0f0f;
+            --bg-input: rgba(30, 30, 30, 0.6);
+            
+            --primary: #AEB784;
+            --primary-glow: rgba(174, 183, 132, 0.4);
+            --text-main: #ededed;
+            --text-muted: #a1a1aa;
+            
+            --border: rgba(255, 255, 255, 0.08);
+            --radius-lg: 24px;
+            --radius-md: 12px;
+            
+            --font-display: 'Space Grotesk', sans-serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            height: 100dvh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .glow-spot {
+            position: absolute;
+            width: 60vw;
+            height: 60vw;
+            background: radial-gradient(circle, rgba(174, 183, 132, 0.08) 0%, transparent 60%);
+            border-radius: 50%;
+            top: -20%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        header {
+            width: 100%;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .brand {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.25rem;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand span { color: var(--primary); }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.4);
+        }
+
+        .home-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+        .home-link:hover { color: #fff; }
+
+        main {
+            flex: 1;
+            width: 100%;
+            max-width: 850px;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            mask-image: linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%);
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        main::-webkit-scrollbar {
+            display: none;
+        }
+
+        .welcome-screen {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+
+        .welcome-screen h1 {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .welcome-screen p {
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            max-width: 400px;
+        }
+
+        .suggestions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .suggestion-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: var(--radius-md);
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .suggestion-card:hover {
+            border-color: var(--primary);
+            background: rgba(174, 183, 132, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .suggestion-card h3 {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-main);
+            margin-bottom: 5px;
+        }
+        .suggestion-card p {
+            font-size: 0.8rem;
+            margin: 0;
+            color: var(--text-muted);
+        }
+
+        .messages-container {
+            display: none;
+            flex-direction: column;
+            gap: 24px;
+            padding-bottom: 40px;
+        }
+
+        .message {
+            display: flex;
+            gap: 16px;
+            line-height: 1.6;
+            font-size: 1rem;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message.user .content {
+            background: #262626;
+            color: #fff;
+            padding: 12px 18px;
+            border-radius: 20px;
+            border-bottom-right-radius: 4px;
+            max-width: 80%;
+        }
+
+        .message.bot {
+            justify-content: flex-start;
+            padding-right: 20px;
+        }
+
+        .message.bot .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--primary), #41431B);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+
+        .message.bot .content {
+            color: #d4d4d8;
+            padding-top: 4px;
+        }
+
+        .content strong { color: #fff; font-weight: 600; }
+        .content code {
+            font-family: 'Menlo', monospace;
+            background: rgba(255,255,255,0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            color: #e2e8f0;
+        }
+        .content pre {
+            background: #111;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        .content ul { padding-left: 20px; margin: 10px 0; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .input-region {
+            width: 100%;
+            padding: 0 20px 30px;
+            display: flex;
+            justify-content: center;
+            z-index: 20;
+        }
+
+        .input-container {
+            width: 100%;
+            max-width: 700px;
+            position: relative;
+            background: var(--bg-input);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
+        }
+
+        .input-container:focus-within {
+            border-color: rgba(174, 183, 132, 0.5);
+            box-shadow: 0 0 20px rgba(174, 183, 132, 0.15);
+            background: rgba(30, 30, 30, 0.8);
+        }
+
+        input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 12px 20px;
+            color: #fff;
+            font-size: 1rem;
+            font-family: var(--font-body);
+            outline: none;
+        }
+
+        input::placeholder { color: #52525b; }
+
+        .send-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: none;
+            background: var(--primary);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .send-btn:hover:not(:disabled) {
+            background: #41431B;
+            transform: scale(1.05);
+        }
+
+        .send-btn:disabled {
+            background: #333;
+            color: #555;
+            cursor: default;
+        }
+
+        .cursor-blink {
+            display: inline-block;
+            width: 6px;
+            height: 16px;
+            background: var(--primary);
+            margin-left: 4px;
+            animation: blink 1s infinite;
+            vertical-align: middle;
+        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+    </style>
+</head>
+<body>
+
+    <div class="glow-spot"></div>
+
+    <header>
+        <div class="brand">
+            <div class="status-dot"></div>
+            TanvirAI
+        </div>
+        <a href="../index.html" class="home-link">Back to Website</a>
+    </header>
+
+    <main id="mainArea">
+        <div class="welcome-screen" id="welcomeScreen">
+            <h1>How can I help you?</h1>
+            <p>I'm TanvirAI. Ask me about Tanvir's projects, skills, or experience.</p>
+            
+            <div class="suggestions">
+                <div class="suggestion-card" onclick="usePrompt('What are Tanvir\'s core skills?')">
+                    <h3>Skills</h3>
+                    <p>"What is his tech stack?"</p>
+                </div>
+                <div class="suggestion-card" onclick="usePrompt('Tell me about his recent projects.')">
+                    <h3>Projects</h3>
+                    <p>"Show me his best work."</p>
+                </div>
+                <div class="suggestion-card" onclick="usePrompt('How do I contact Tanvir?')">
+                    <h3>Contact</h3>
+                    <p>"Is he available for hire?"</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="messages-container" id="messagesContainer">
+            </div>
+    </main>
+
+    <div class="input-region">
+        <div class="input-container">
+            <input type="text" id="userInput" placeholder="Ask anything..." autocomplete="off">
+            <button class="send-btn" id="sendBtn" onclick="handleSend()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const API_KEY = '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';
+        const API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+        let history = [
+            { 
+                role: "system", 
+                content: `You are TanvirAI, a portfolio assistant for Syed Tanvir Islam, a 16-year-old self-taught frontend developer from Dhaka, Bangladesh. You're knowledgeable, professional, enthusiastic, and helpful.
+
+ABOUT TANVIR:
+- Age: 16 years old (self-taught developer)
+- Location: Dhaka, Bangladesh
+- Email: syedtanvirislam20@gmail.com
+- Phone: +880 1921575251
+- GitHub: syedtanvircodex
+- Specialization: Frontend development with complex systems (AI interfaces, 3D visualizations, real-time apps)
+- Philosophy: Every detail matters - spacing, timing, typography. If something doesn't improve experience, it doesn't ship.
+- Achievements: 12+ live projects deployed, 3 unique tech stacks mastered
+
+PROJECTS (showcase these proudly):
+1. **TanvirAI** - Real-time conversational AI with markdown rendering, async message processing, native-feeling UX
+2. **DebateAI** - AI-powered debate arena with structured rounds, real-time feedback, argument scoring
+3. **Mr.Premium** - High-conversion e-commerce platform for digital goods, clean shopping experience
+
+TECH STACK (only mention these when discussing Tanvir's skills):
+- Frontend: HTML5, CSS3, JavaScript, TypeScript, React, Tailwind CSS
+- Backend: Node.js, Python
+- Database: Firebase, Supabase
+- Tools: Git, GitHub, Vercel, Netlify
+
+CONVERSATION GUIDELINES:
+- You CAN answer general questions about any topic (coding, design, tech, life advice, etc.)
+- When asked about Tanvir specifically, provide accurate portfolio info
+- When asked about restricted personal details (family, home address), politely decline
+- When asked about other technologies NOT in Tanvir's stack, just answer normally - don't redirect
+- If someone asks about job opportunities: "At 16, I can't take paid positions, but collaborations on interesting projects are always welcome!"
+- Feel free to chat naturally - this is a conversation, not a sales pitch
+
+TONE: Professional, conversational, helpful. Show personality. Be concise but warm. Answer what's asked, don't over-redirect. Use markdown for emphasis when relevant.`
+            }
+        ];
+        let isFirstMessage = true;
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const messagesContainer = document.getElementById('messagesContainer');
+        const input = document.getElementById('userInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const mainArea = document.getElementById('mainArea');
+
+        function usePrompt(text) {
+            input.value = text;
+            handleSend();
+        }
+
+        function scrollToBottom() {
+            mainArea.scrollTop = mainArea.scrollHeight;
+        }
+
+        function switchLayout() {
+            if (isFirstMessage) {
+                welcomeScreen.style.display = 'none';
+                messagesContainer.style.display = 'flex';
+                isFirstMessage = false;
+            }
+        }
+
+        async function typeText(element, text) {
+            const words = text.split(' ');
+            element.innerHTML = '';
+            const cursor = document.createElement('span');
+            cursor.className = 'cursor-blink';
+            element.appendChild(cursor);
+
+            for (let i = 0; i < words.length; i++) {
+                cursor.remove();
+                element.innerHTML += words[i] + ' ';
+                element.appendChild(cursor);
+                await new Promise(r => setTimeout(r, Math.random() * 30 + 20));
+                scrollToBottom();
+            }
+            cursor.remove();
+            element.innerHTML = parseMarkdown(element.innerText); 
+        }
+
+        function parseMarkdown(text) {
+            let html = text
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
+                .replace(/`([^`]+)`/g, '<code>$1</code>')
+                .replace(/\*\*([^\*]+)\*\*/g, '<strong>$1</strong>')
+                .replace(/\n/g, '<br>');
+            return html;
+        }
+
+        function addUserMessage(text) {
+            const div = document.createElement('div');
+            div.className = 'message user';
+            div.innerHTML = `<div class="content">${parseMarkdown(text)}</div>`;
+            messagesContainer.appendChild(div);
+            scrollToBottom();
+        }
+
+        function createBotMessageContainer() {
+            const div = document.createElement('div');
+            div.className = 'message bot';
+            div.innerHTML = `
+                <div class="avatar">AI</div>
+                <div class="content"></div>
+            `;
+            messagesContainer.appendChild(div);
+            return div.querySelector('.content');
+        }
+
+        async function handleSend() {
+            const text = input.value.trim();
+            if (!text) return;
+            switchLayout();
+            input.value = '';
+            input.blur();
+            sendBtn.disabled = true;
+            
+            addUserMessage(text);
+            history.push({ role: "user", content: text });
+            const botContentDiv = createBotMessageContainer();
+            botContentDiv.innerHTML = '<span class="cursor-blink"></span>';
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${API_KEY}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: "llama-3.3-70b-versatile",
+                        messages: history,
+                        temperature: 0.7,
+                        max_tokens: 500
+                    })
+                });
+
+                const data = await response.json();
+                const botReply = data.choices[0].message.content;
+
+                history.push({ role: "assistant", content: botReply });
+                await typeText(botContentDiv, botReply);
+
+            } catch (error) {
+                botContentDiv.innerHTML = '<span style="color:#ef4444">Error connecting to intelligence engine.</span>';
+                console.error(error);
+            } finally {
+                sendBtn.disabled = false;
+                input.focus();
+                scrollToBottom();
+            }
+        }
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleSend();
+        });
+
+    </script>
+</body>
+</html>
