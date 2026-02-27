@@ -23,6 +23,12 @@ TanvirAI can assist with inquiries about:
 - **General Questions** - Tech discussions, design principles, coding advice
 - **Contact Information** - How to reach out for collaborations
 
+## 🎮 Live Demo
+
+**Try TanvirAI now:** https://syedtanvir.netlify.app/projects/tanvirai
+
+Launch the app directly in your browser with no installation required!
+
 ## 🚀 Quick Start
 
 ### Prerequisites
