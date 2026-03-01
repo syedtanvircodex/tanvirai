@@ -259,6 +259,24 @@
             z-index: 20;
         }
 
+        @media (max-width: 480px) {
+            .input-region {
+                padding: 0 12px 20px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .input-region {
+                padding: 0 8px 16px;
+            }
+        }
+
+        @media (max-width: 320px) {
+            .input-region {
+                padding: 0 6px 12px;
+            }
+        }
+
         .input-container {
             width: 100%;
             max-width: 700px;
@@ -273,12 +291,37 @@
             align-items: center;
             transition: all 0.3s ease;
             box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
+            gap: 4px;
         }
 
         .input-container:focus-within {
             border-color: rgba(174, 183, 132, 0.5);
             box-shadow: 0 0 20px rgba(174, 183, 132, 0.15);
             background: rgba(30, 30, 30, 0.8);
+        }
+
+        @media (max-width: 480px) {
+            .input-container {
+                border-radius: 24px;
+                padding: 6px;
+                gap: 2px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .input-container {
+                border-radius: 20px;
+                padding: 5px;
+                gap: 2px;
+            }
+        }
+
+        @media (max-width: 320px) {
+            .input-container {
+                border-radius: 18px;
+                padding: 4px;
+                gap: 2px;
+            }
         }
 
         input {
@@ -290,9 +333,39 @@
             font-size: 1rem;
             font-family: var(--font-body);
             outline: none;
+            min-width: 0;
         }
 
         input::placeholder { color: #52525b; }
+
+        @media (max-width: 480px) {
+            input {
+                padding: 10px 14px;
+                font-size: 0.95rem;
+            }
+        }
+
+        @media (max-width: 380px) {
+            input {
+                padding: 8px 10px;
+                font-size: 0.9rem;
+            }
+
+            input::placeholder {
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 320px) {
+            input {
+                padding: 8px 8px;
+                font-size: 0.85rem;
+            }
+
+            input::placeholder {
+                font-size: 0.8rem;
+            }
+        }
 
         .send-btn {
             width: 44px;
@@ -306,6 +379,7 @@
             justify-content: center;
             cursor: pointer;
             transition: all 0.2s;
+            flex-shrink: 0;
         }
 
         .send-btn:hover:not(:disabled) {
@@ -317,6 +391,42 @@
             background: #333;
             color: #555;
             cursor: default;
+        }
+
+        @media (max-width: 480px) {
+            .send-btn {
+                width: 40px;
+                height: 40px;
+            }
+
+            .send-btn svg {
+                width: 18px;
+                height: 18px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .send-btn {
+                width: 36px;
+                height: 36px;
+            }
+
+            .send-btn svg {
+                width: 16px;
+                height: 16px;
+            }
+        }
+
+        @media (max-width: 320px) {
+            .send-btn {
+                width: 32px;
+                height: 32px;
+            }
+
+            .send-btn svg {
+                width: 14px;
+                height: 14px;
+            }
         }
 
         .cursor-blink {
@@ -384,10 +494,10 @@
         let history = [
             { 
                 role: "system", 
-                content: `You are TanvirAI, a portfolio assistant for Syed Tanvir Islam, a 16-year-old self-taught frontend developer from Dhaka, Bangladesh. You're knowledgeable, professional, enthusiastic, and helpful.
+                content: `You are TanvirAI, a portfolio assistant for Syed Tanvir Islam, a 17-year-old self-taught frontend developer from Dhaka, Bangladesh. You're knowledgeable, professional, enthusiastic, and helpful.
 
 ABOUT TANVIR:
-- Age: 16 years old (self-taught developer)
+- Age: 17 years old (self-taught developer)
 - Location: Dhaka, Bangladesh
 - Email: syedtanvirislam20@gmail.com
 - Phone: +880 1921575251
@@ -412,7 +522,7 @@ CONVERSATION GUIDELINES:
 - When asked about Tanvir specifically, provide accurate portfolio info
 - When asked about restricted personal details (family, home address), politely decline
 - When asked about other technologies NOT in Tanvir's stack, just answer normally - don't redirect
-- If someone asks about job opportunities: "At 16, I can't take paid positions, but collaborations on interesting projects are always welcome!"
+- If someone asks about job opportunities: "At 17, I can't take paid positions, but collaborations on interesting projects are always welcome!"
 - Feel free to chat naturally - this is a conversation, not a sales pitch
 
 TONE: Professional, conversational, helpful. Show personality. Be concise but warm. Answer what's asked, don't over-redirect. Use markdown for emphasis when relevant.`
