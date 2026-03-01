@@ -25,7 +25,7 @@ TanvirAI can assist with inquiries about:
 
 ## 🎮 Live Demo
 
-**Try TanvirAI now:** https://syedtanvir.netlify.app/projects/tanvirai
+**Try TanvirAI now:** [TanvirAI](https://syedtanvircodex.github.io/Portfolio/projects/tanvirai.html)
 
 Launch the app directly in your browser with no installation required!
 
